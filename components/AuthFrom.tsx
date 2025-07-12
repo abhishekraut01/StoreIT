@@ -22,7 +22,7 @@ import Link from 'next/link'
 const formSchema = z.object({
   fullName: z.string().min(2, {
     message: 'Full name must be at least 2 characters.',
-  }),
+  }).optional(),
   email: z.string().email({
     message: 'Enter a valid email.',
   }),
@@ -34,7 +34,7 @@ type AuthFormProps = {
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage] = useState('')
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
