@@ -18,11 +18,12 @@ import {
 
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
+import { handleSignup } from '@/lib/actions/auth'
 
 const formSchema = z.object({
   fullName: z.string().min(2, {
     message: 'Full name must be at least 2 characters.',
-  }).optional(),
+  }),
   email: z.string().email({
     message: 'Enter a valid email.',
   }),
@@ -44,10 +45,22 @@ const AuthForm = ({ type }: AuthFormProps) => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true)
-    console.log(values)
-    setTimeout(() => setLoading(false), 1500)
+
+    if (type === 'sign-up') {
+      const res = await handleSignup(values)
+
+      if (!res.success) {
+        console.error(res.error)
+        // optionally show error using toast or setErrorMessage
+      } else {
+        console.log('User created, OTP sent to email!')
+        // optionally route to verify page
+      }
+    }
+
+    setLoading(false)
   }
 
   return (
