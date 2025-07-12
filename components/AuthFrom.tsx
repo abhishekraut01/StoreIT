@@ -23,7 +23,7 @@ import { handleSignup } from '@/lib/actions/auth'
 const formSchema = z.object({
   fullName: z.string().min(2, {
     message: 'Full name must be at least 2 characters.',
-  }),
+  }).optional(),
   email: z.string().email({
     message: 'Enter a valid email.',
   }),
@@ -45,11 +45,14 @@ const AuthForm = ({ type }: AuthFormProps) => {
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit({fullName , email}: z.infer<typeof formSchema>) {
     setLoading(true)
 
     if (type === 'sign-up') {
-      const res = await handleSignup(values)
+      const res = await handleSignup({
+        fullName: fullName ?? '', 
+        email
+      })
 
       if (!res.success) {
         console.error(res.error)
